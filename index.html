@@ -323,6 +323,17 @@
       position: relative;
       z-index: 1;
     }
+    #login{
+      padding-bottom: calc(var(--safe-area-bottom) + var(--space-4));
+    }
+    .login-body{
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     .login-title{
       font-size: var(--text-4xl);
       font-weight: var(--font-bold);
@@ -928,52 +939,54 @@
           <div class="orb three"></div>
         </div>
 
-        <div class="login-hero">
-          <div class="logo" aria-label="Revolut logo">R</div>
-          <div class="login-title">Revolut Pro</div>
-          <div class="login-sub">Business banking built for modern teams.</div>
-          <div class="login-badges">
-            <span class="badge">Trusted by teams</span>
-            <span class="badge">Instant transfers</span>
-            <span class="badge">Real-time alerts</span>
-          </div>
-        </div>
-
-        <div class="login-sheet">
-          <div class="login-tabs">
-            <button class="login-tab active" type="button">Sign in</button>
-            <button class="login-tab" type="button">New account</button>
+        <div class="login-body">
+          <div class="login-hero">
+            <div class="logo" aria-label="Revolut logo">R</div>
+            <div class="login-title">Revolut Pro</div>
+            <div class="login-sub">Business banking built for modern teams.</div>
+            <div class="login-badges">
+              <span class="badge">Trusted by teams</span>
+              <span class="badge">Instant transfers</span>
+              <span class="badge">Real-time alerts</span>
+            </div>
           </div>
 
-          <div style="margin-top: var(--space-4);">
-            <label class="sm muted" for="phone">Phone number</label>
-            <div class="login-row">
-              <div class="country-pill">NG +234</div>
-              <input id="phone" class="input" inputmode="tel" placeholder="812 745 6579" aria-label="Phone number" value="8127456579" />
+          <div class="login-sheet">
+            <div class="login-tabs">
+              <button class="login-tab active" type="button">Sign in</button>
+              <button class="login-tab" type="button">New account</button>
             </div>
 
-            <a class="btn-primary pressable mt4" href="#pin" aria-label="Continue to PIN">
-              Continue
-              <span aria-hidden="true">&gt;</span>
-            </a>
+            <div style="margin-top: var(--space-4);">
+              <label class="sm muted" for="phone">Phone number</label>
+              <div class="login-row">
+                <div class="country-pill">NG +234</div>
+                <input id="phone" class="input" inputmode="tel" placeholder="812 745 6579" aria-label="Phone number" value="8127456579" />
+              </div>
 
-            <div class="secure-row">
-              <div class="secure-icon">LOCK</div>
-              <div class="muted sm">Protected by device PIN and biometrics</div>
+              <a class="btn-primary pressable mt4" href="#pin" aria-label="Continue to PIN">
+                Continue
+                <span aria-hidden="true">&gt;</span>
+              </a>
+
+              <div class="secure-row">
+                <div class="secure-icon">LOCK</div>
+                <div class="muted sm">Protected by device PIN and biometrics</div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="social-buttons">
+                <a class="btn-ghost pressable" href="#pin" aria-label="Use Face ID">Use Face ID</a>
+                <a class="btn-ghost pressable" href="#login" aria-label="Use email instead">Use email instead</a>
+              </div>
+
+              <div class="row space-between mt4">
+                <a class="link sm" href="#pin">Forgot PIN?</a>
+                <a class="link sm" href="#login">Create account</a>
+              </div>
+              <div class="legal muted tiny">By continuing, you agree to the Terms and Privacy Policy.</div>
             </div>
-
-            <div class="divider"></div>
-
-            <div class="social-buttons">
-              <a class="btn-ghost pressable" href="#pin" aria-label="Use Face ID">Use Face ID</a>
-              <a class="btn-ghost pressable" href="#login" aria-label="Use email instead">Use email instead</a>
-            </div>
-
-            <div class="row space-between mt4">
-              <a class="link sm" href="#pin">Forgot PIN?</a>
-              <a class="link sm" href="#login">Create account</a>
-            </div>
-            <div class="legal muted tiny">By continuing, you agree to the Terms and Privacy Policy.</div>
           </div>
         </div>
       </section>

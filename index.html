@@ -1,0 +1,2019 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=414, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#191C1F" />
+  <title>Revolut Pro</title>
+  <style>
+    :root{
+      /* Primary Colors */
+      --revolut-black:#191C1F;
+      --revolut-dark:#1A1A1A;
+      --revolut-charcoal:#2D2D2D;
+      --revolut-gray-900:#1E1E1E;
+      --revolut-gray-800:#2A2A2A;
+      --revolut-gray-700:#3D3D3D;
+      --revolut-gray-600:#4A4A4A;
+      --revolut-gray-500:#6B6B6B;
+      --revolut-gray-400:#8E8E93;
+      --revolut-gray-300:#AEAEB2;
+      --revolut-gray-200:#D1D1D6;
+      --revolut-gray-100:#E5E5EA;
+      --revolut-white:#FFFFFF;
+
+      /* Accent Colors */
+      --revolut-blue:#0075EB;
+      --revolut-blue-light:#3D9DF3;
+      --revolut-purple:#8B5CF6;
+      --revolut-pink:#EC4899;
+      --revolut-green:#00D09C;
+      --revolut-green-dark:#00B386;
+      --revolut-red:#FF3B30;
+      --revolut-orange:#FF9500;
+      --revolut-yellow:#FFCC00;
+
+      /* Gradients */
+      --gradient-premium:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      --gradient-card:linear-gradient(145deg,#2D2D2D 0%,#1A1A1A 100%);
+      --gradient-metal:linear-gradient(135deg,#434343 0%,#000000 100%);
+
+      /* Typography */
+      --font-primary:'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      --font-mono:'SF Mono','Fira Code',monospace;
+      --text-xs:11px;
+      --text-sm:13px;
+      --text-base:15px;
+      --text-lg:17px;
+      --text-xl:20px;
+      --text-2xl:24px;
+      --text-3xl:28px;
+      --text-4xl:34px;
+      --text-5xl:42px;
+      --text-balance:52px;
+
+      --font-regular:400;
+      --font-medium:500;
+      --font-semibold:600;
+      --font-bold:700;
+
+      --tracking-tight:-0.02em;
+
+      /* Spacing */
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+      --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
+
+      /* Radius */
+      --radius-sm:8px;
+      --radius-md:12px;
+      --radius-lg:16px;
+      --radius-xl:20px;
+      --radius-2xl:24px;
+      --radius-full:9999px;
+
+      /* Safe areas - iPhone XR values */
+      --safe-area-top: 44px;
+      --safe-area-bottom: 34px;
+
+      /* Shadows */
+      --shadow-card:0 8px 32px rgba(0,0,0,0.12);
+      --shadow-elevated:0 20px 40px rgba(0,0,0,0.15);
+
+      /* Blur */
+      --blur-backdrop: blur(20px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background: radial-gradient(1000px 700px at 20% 15%, rgba(0,117,235,0.10), transparent 50%),
+                  radial-gradient(900px 650px at 85% 30%, rgba(139,92,246,0.12), transparent 55%),
+                  var(--revolut-black);
+      color: var(--revolut-white);
+      font-family: var(--font-primary);
+      letter-spacing: var(--tracking-tight);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x:hidden;
+    }
+
+    /* iPhone XR dimensions: 414 x 896 points */
+    .app-shell{
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--revolut-black);
+    }
+
+    .phone{
+      width: 414px;
+      height: 896px;
+      max-width: 100vw;
+      max-height: 100dvh;
+      background: rgba(25,28,31,1);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    /* Screens */
+    .screen{
+      display:none;
+      flex:1;
+      overflow:hidden;
+      position:relative;
+    }
+    .screen-scroll{
+      flex:1;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Default screen (no hash) */
+    body:not(:has(.screen:target)) #login { display:flex; }
+
+    /* When targeted */
+    .screen:target{
+      display:flex;
+      flex-direction:column;
+      animation: slideInRight 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Ensure a selected screen appears even if default rule shows login */
+    body:has(.screen:target) #login { display:none; }
+    body:has(#login:target) #login { display:flex; }
+
+    @keyframes slideInRight{
+      from { transform: translateX(16px); opacity:0; }
+      to   { transform: translateX(0); opacity:1; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .screen:target{ animation:none; }
+      .pressable:active{ transform:none !important; }
+      .orb{ animation:none !important; }
+      .pulse{ animation:none !important; }
+      .skeleton{ animation:none !important; }
+    }
+
+    /* Shared layout */
+    .content{
+      padding: 0 var(--space-4);
+    }
+    .content.flex-grow{
+      flex: 1;
+    }
+    .stack{ display:flex; flex-direction:column; gap: var(--space-5); }
+    .row{ display:flex; align-items:center; }
+    .space-between{ justify-content:space-between; }
+    .muted{ color: rgba(255,255,255,0.62); }
+    .tiny{ font-size: var(--text-xs); letter-spacing: 0.3px; }
+    .sm{ font-size: var(--text-sm); }
+    .base{ font-size: var(--text-base); }
+    .lg{ font-size: var(--text-lg); }
+    .xl{ font-size: var(--text-xl); }
+    .h1{ font-size: var(--text-3xl); font-weight: var(--font-bold); line-height: 1.2; }
+    .balance{
+      font-size: clamp(40px, 9.5vw, var(--text-balance));
+      font-weight: var(--font-bold);
+      letter-spacing: -0.03em;
+      line-height:1.05;
+      margin: var(--space-4) 0 var(--space-2);
+    }
+
+    /* Cards / surfaces */
+    .card{
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+    }
+    .card.pad{ padding: var(--space-4); }
+
+    .pressable{
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select:none;
+      transform-origin:center;
+      transition: transform 100ms ease, background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+      will-change: transform;
+    }
+    .pressable:active{ transform: scale(0.97); }
+    .pressable.no-scale:active { transform: none; }
+
+    .btn-primary{
+      width:100%;
+      border:0;
+      border-radius: var(--radius-xl);
+      padding: 16px 18px;
+      font-weight: var(--font-semibold);
+      font-size: var(--text-base);
+      color: white;
+      background: linear-gradient(135deg, var(--revolut-blue) 0%, #0066d9 100%);
+      box-shadow: 0 12px 24px rgba(0,117,235,0.30);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      cursor:pointer;
+      transition: all 200ms ease;
+    }
+    .btn-primary:hover:not(:disabled){ box-shadow: 0 16px 32px rgba(0,117,235,0.40); transform: translateY(-2px); }
+    .btn-primary:active:not(:disabled){ transform: translateY(0); }
+
+    .btn-ghost{
+      width:100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.90);
+      border-radius: var(--radius-xl);
+      padding: 16px 18px;
+      font-weight: var(--font-semibold);
+      font-size: var(--text-base);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      cursor:pointer;
+      transition: all 200ms ease;
+    }
+    .btn-ghost:hover{ background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.16); }
+    .btn-ghost:active{ transform: scale(0.98); }
+
+    .link{
+      color: rgba(255,255,255,0.80);
+      text-decoration:none;
+    }
+    .link:hover{ text-decoration:underline; }
+
+    /* Input */
+    .input{
+      width:100%;
+      padding: 16px 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.30);
+      color: white;
+      font-size: var(--text-base);
+      outline:none;
+      transition: all 200ms ease;
+    }
+    .input::placeholder{ color: rgba(255,255,255,0.45); }
+    .input:focus{
+      border-color: rgba(0,117,235,0.60);
+      background: rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 4px rgba(0,117,235,0.15);
+    }
+
+    /* Login background orbs */
+    .login-bg{
+      position:absolute; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .orb{
+      position:absolute;
+      filter: blur(26px);
+      opacity: 0.55;
+      border-radius: 999px;
+      animation: float 6s ease-in-out infinite;
+      will-change: transform;
+    }
+    .orb.one{ width:260px; height:260px; left:-90px; top:110px; background: rgba(0,117,235,0.55); animation-delay: 0.2s; }
+    .orb.two{ width:240px; height:240px; right:-120px; top:220px; background: rgba(139,92,246,0.55); animation-delay: 1.0s; }
+    .orb.three{ width:210px; height:210px; left:40px; bottom:-110px; background: rgba(236,72,153,0.35); animation-delay: 1.6s; }
+    @keyframes float{
+      0%,100%{ transform: translateY(0) translateX(0) scale(1); }
+      50%{ transform: translateY(-14px) translateX(8px) scale(1.04); }
+    }
+
+    /* Logo */
+    .logo-wrap{
+      display:flex; justify-content:center;
+      padding: var(--space-6) 0 var(--space-3);
+    }
+    .logo{
+      width:60px; height:60px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.12);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800;
+      font-size: 28px;
+      letter-spacing:-0.03em;
+      box-shadow: 0 16px 36px rgba(0,117,235,0.20);
+      transform: translateY(0);
+      animation: logoIn 480ms cubic-bezier(.2,.9,.2,1) both;
+    }
+    @keyframes logoIn{
+      from{ opacity:0; transform: translateY(-12px) scale(0.94); }
+      to{ opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .login-hero{
+      padding: calc(var(--safe-area-top) + var(--space-8)) var(--space-4) var(--space-4);
+      position: relative;
+      z-index: 1;
+    }
+    .login-title{
+      font-size: var(--text-4xl);
+      font-weight: var(--font-bold);
+      letter-spacing: -0.02em;
+      margin-top: var(--space-4);
+    }
+    .login-sub{ color: rgba(255,255,255,0.70); margin-top: var(--space-2); }
+    .login-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: var(--space-3);
+    }
+    .badge{
+      padding: 6px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,0.80);
+    }
+    .login-sheet{
+      margin: 0 var(--space-4) var(--space-6);
+      padding: var(--space-4);
+      border-radius: var(--radius-2xl);
+      background: rgba(16,18,20,0.82);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow-elevated);
+      backdrop-filter: blur(22px);
+    }
+    .login-tabs{
+      display:flex;
+      gap:6px;
+      padding:4px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .login-tab{
+      flex:1;
+      border:0;
+      padding: 8px 10px;
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: rgba(255,255,255,0.70);
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+    }
+    .login-tab.active{
+      background: rgba(255,255,255,0.16);
+      color: white;
+    }
+    .login-row{ display:flex; gap:10px; margin-top:10px; }
+    .country-pill{
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      display:flex; align-items:center; gap:6px;
+      color: rgba(255,255,255,0.85);
+      font-size: var(--text-sm);
+      white-space: nowrap;
+    }
+    .secure-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top: var(--space-4);
+    }
+    .secure-icon{
+      width:28px; height:28px;
+      border-radius: 10px;
+      background: rgba(0,208,156,0.18);
+      border: 1px solid rgba(0,208,156,0.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 11px;
+      color: var(--revolut-green);
+      font-weight: var(--font-semibold);
+    }
+    .social-buttons{ display:flex; flex-direction:column; gap:10px; }
+    .legal{ margin-top: var(--space-3); }
+
+    /* PIN dots + keypad (CSS-only mock) */
+    .pin-dots{ display:flex; gap:10px; justify-content:center; padding: var(--space-6) 0 var(--space-2); }
+    .dot{
+      width:10px; height:10px; border-radius: 999px;
+      background: rgba(255,255,255,0.20);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    /* Demo “filled” look (static) */
+    .dot.filled{ background: rgba(255,255,255,0.88); }
+
+    .keypad{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: var(--space-4);
+    }
+    .key{
+      height: 56px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px;
+      font-weight: var(--font-semibold);
+      color: rgba(255,255,255,0.92);
+      text-decoration:none;
+    }
+    .key:active{ background: rgba(255,255,255,0.10); transform: scale(0.98); }
+
+    .biometric{
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      padding: var(--space-3) 0 var(--space-6);
+    }
+    .faceid{
+      width:44px; height:44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .pulse{ position:relative; }
+    .pulse::after{
+      content:"";
+      position:absolute; inset:-8px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,208,156,0.35);
+      opacity: 0;
+      animation: pulse 1.4s ease-out infinite;
+    }
+    @keyframes pulse{
+      0%{ transform: scale(0.92); opacity:0; }
+      35%{ opacity: 0.7; }
+      100%{ transform: scale(1.12); opacity: 0; }
+    }
+
+    /* Header */
+    .topbar{
+      padding: var(--safe-area-top) var(--space-4) var(--space-2);
+      padding-bottom: var(--space-2);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .avatar{
+      width:36px; height:36px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(255,255,255,0.20), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.10);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: var(--font-semibold);
+      color: rgba(255,255,255,0.9);
+      flex: 0 0 auto;
+    }
+    .gear{
+      width:36px; height:36px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      text-decoration:none;
+      color: rgba(255,255,255,0.88);
+      flex: 0 0 auto;
+    }
+
+    .account-pill{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      margin: 10px auto 0;
+      padding: 8px 12px;
+      width: fit-content;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.76);
+      font-size: var(--text-sm);
+      text-decoration:none;
+    }
+
+    /* Quick actions */
+    .quick-actions{
+      display:flex;
+      gap: 14px;
+      justify-content:space-between;
+      padding: 0 var(--space-4);
+    }
+    .qa{
+      flex:1 1 0;
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      text-decoration:none;
+      color: rgba(255,255,255,0.92);
+    }
+    .qa .icon{
+      width:52px; height:52px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.18);
+    }
+    .qa .label{ font-size: var(--text-sm); color: rgba(255,255,255,0.78); }
+
+    /* Card carousel */
+    .section-head{
+      padding: 0 var(--space-4);
+      display:flex; align-items:center; justify-content:space-between;
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-2);
+    }
+    .section-title{ font-size: var(--text-lg); font-weight: var(--font-semibold); }
+    .section-link{ font-size: var(--text-sm); color: rgba(255,255,255,0.70); text-decoration:none; }
+
+    .carousel{
+      padding: 0 var(--space-4) var(--space-2);
+      display:flex;
+      gap: 14px;
+      overflow-x:auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel::-webkit-scrollbar{ height:0; }
+
+    .vcard{
+      width: 280px;
+      height: 175px;
+      flex: 0 0 auto;
+      border-radius: var(--radius-lg);
+      scroll-snap-align: start;
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+    }
+    .vcard.standard{ background: var(--gradient-card); }
+    .vcard.premium{ background: var(--gradient-premium); }
+    .vcard.metal{ background: var(--gradient-metal); }
+
+    .vcard::after{
+      content:"";
+      position:absolute; inset:-60px;
+      background: radial-gradient(closest-side at 30% 30%, rgba(255,255,255,0.20), transparent 60%);
+      transform: rotate(8deg);
+      pointer-events:none;
+    }
+    .vcard-inner{
+      position:absolute; inset:0;
+      padding: 14px 14px;
+      display:flex; flex-direction:column;
+      justify-content:space-between;
+    }
+    .vcard-top{
+      display:flex; align-items:center; justify-content:space-between;
+      color: rgba(255,255,255,0.90);
+      font-weight: var(--font-semibold);
+    }
+    .vcard-logo{
+      display:flex; align-items:center; gap:8px;
+      font-size: 14px;
+    }
+    .chip{
+      width:34px; height:26px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .vcard-num{ font-family: var(--font-mono); font-size: 13px; opacity:0.9; }
+    .vcard-bottom{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      color: rgba(255,255,255,0.90);
+    }
+    .vcard-meta{ display:flex; flex-direction:column; gap:6px; }
+    .vcard-name{ font-size: 12px; opacity:0.85; }
+    .vcard-exp{ font-size: 12px; opacity:0.8; }
+    .brand{
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      opacity: 0.85;
+    }
+
+    /* Transactions preview/list */
+    .list{
+      margin: 0 var(--space-4);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      overflow:hidden;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      padding: 14px 14px;
+      text-decoration:none;
+      color: white;
+    }
+    .item + .item{ border-top: 1px solid rgba(255,255,255,0.08); }
+    .item:active{ background: rgba(255,255,255,0.06); }
+    .i-icon{
+      width:44px; height:44px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 20px;
+      flex: 0 0 auto;
+    }
+    .i-mid{ flex:1; min-width:0; }
+    .i-title{
+      font-size: var(--text-base);
+      font-weight: var(--font-medium);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .i-sub{
+      margin-top: 2px;
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.60);
+    }
+    .amt{
+      font-weight: var(--font-semibold);
+      font-size: var(--text-base);
+      white-space:nowrap;
+    }
+    .amt.pos{ color: var(--revolut-green); }
+    .chev{
+      color: rgba(255,255,255,0.35);
+      margin-left: 4px;
+    }
+
+    /* Transactions page header */
+    .page-head{
+      padding: var(--safe-area-top) var(--space-4) 10px;
+      padding-bottom: 10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .back{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      text-decoration:none;
+      color: rgba(255,255,255,0.92);
+    }
+    .filters{
+      display:flex; gap:10px;
+    }
+    .iconbtn{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      display:flex; align-items:center; justify-content:center;
+      text-decoration:none;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .search{
+      padding: 0 var(--space-4) var(--space-3);
+    }
+
+    .summary{
+      margin: 0 var(--space-4) var(--space-4);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      box-shadow: var(--shadow-card);
+    }
+    .summary .big{ font-size: var(--text-2xl); font-weight: var(--font-bold); margin-top: 6px; }
+    .summary .delta{ color: rgba(0,208,156,0.92); font-size: var(--text-sm); margin-top: 6px; }
+
+    .group-title{
+      padding: 8px var(--space-4) 8px;
+      color: rgba(255,255,255,0.62);
+      font-size: var(--text-sm);
+      font-weight: var(--font-medium);
+    }
+
+    /* Bottom navigation */
+    .bottom-nav{
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-bottom: var(--safe-area-bottom);
+      background: rgba(26,26,26,0.98);
+      border-top: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: var(--blur-backdrop);
+      -webkit-backdrop-filter: var(--blur-backdrop);
+    }
+    .tabs{
+      height: 64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-around;
+    }
+    .tab{
+      width: 64px;
+      height: 54px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+      text-decoration:none;
+      color: rgba(255,255,255,0.55);
+      font-size: var(--text-xs);
+    }
+    .tab .ticon{ font-size: 20px; line-height:1; display:flex; align-items:center; justify-content:center; }
+    .tab .ticon svg{
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .tab.active{ color: var(--revolut-blue-light); }
+    .tab .label{ display:none; }
+    .tab.active .label{ display:block; }
+
+    .page-title{
+      font-size: var(--text-xl);
+      font-weight: var(--font-semibold);
+    }
+    .action-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      padding: 0 var(--space-4);
+    }
+    .action-tile{
+      padding: 12px 10px;
+      text-align:center;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.88);
+    }
+    .progress{
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow:hidden;
+    }
+    .progress span{
+      display:block;
+      height:100%;
+      width: 62%;
+      background: linear-gradient(90deg, var(--revolut-blue), var(--revolut-blue-light));
+    }
+    .category-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .category-bar{
+      flex:1;
+      height:6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow:hidden;
+    }
+    .category-bar span{
+      display:block;
+      height:100%;
+      background: rgba(255,255,255,0.60);
+    }
+    .rate-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 0;
+    }
+    .rate-row + .rate-row{ border-top: 1px solid rgba(255,255,255,0.08); }
+    .rate{ font-family: var(--font-mono); font-size: var(--text-sm); }
+    .profile-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding: var(--safe-area-top) var(--space-4) var(--space-2);
+    }
+    .profile-card{
+      margin: 0 var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+    }
+    .profile-list{
+      margin: var(--space-4) var(--space-4) var(--space-6);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      overflow:hidden;
+    }
+    .profile-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 14px;
+      color: rgba(255,255,255,0.92);
+      text-decoration:none;
+    }
+    .profile-item + .profile-item{ border-top: 1px solid rgba(255,255,255,0.08); }
+
+    .receipt-card{
+      margin: 0 var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      box-shadow: var(--shadow-card);
+    }
+    .receipt-status{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(0,208,156,0.16);
+      color: var(--revolut-green);
+      font-size: var(--text-xs);
+      border: 1px solid rgba(0,208,156,0.35);
+      font-weight: var(--font-semibold);
+    }
+    .receipt-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top: var(--space-3);
+    }
+    .receipt-label{ color: rgba(255,255,255,0.62); font-size: var(--text-sm); }
+    .receipt-value{ font-size: var(--text-base); }
+
+    /* Skeleton loading animation */
+    .skeleton{
+      position:relative;
+      overflow:hidden;
+      background: rgba(255,255,255,0.06);
+    }
+    .skeleton::after{
+      content:"";
+      position:absolute; inset:0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+      animation: shimmer 1.4s infinite;
+      will-change: transform;
+    }
+    @keyframes shimmer{
+      to{ transform: translateX(100%); }
+    }
+
+    /* Keypad shake animation */
+    .keypad.shake {
+      animation: keypadShake 0.4s ease-in-out;
+    }
+    @keyframes keypadShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      50% { transform: translateX(8px); }
+      75% { transform: translateX(-8px); }
+    }
+
+    /* Helpers */
+    .center{ text-align:center; }
+    .mt2{ margin-top: var(--space-2); }
+    .mt4{ margin-top: var(--space-4); }
+    .mt6{ margin-top: var(--space-6); }
+    .pb-nav{ padding-bottom: var(--space-4); }
+    .divider{ height:1px; background: rgba(255,255,255,0.08); margin: var(--space-4) 0; }
+
+    /* Home indicator */
+    .home-indicator{
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      z-index: 100;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <main class="phone" role="application" aria-label="Revolut mobile banking app">
+<!-- Home Indicator -->
+      <div class="home-indicator" aria-hidden="true"></div>
+      <!-- LOGIN -->
+      <section id="login" class="screen" aria-label="Login">
+        <div class="login-bg" aria-hidden="true">
+          <div class="orb one"></div>
+          <div class="orb two"></div>
+          <div class="orb three"></div>
+        </div>
+
+        <div class="login-hero">
+          <div class="logo" aria-label="Revolut logo">R</div>
+          <div class="login-title">Revolut Pro</div>
+          <div class="login-sub">Business banking built for modern teams.</div>
+          <div class="login-badges">
+            <span class="badge">Trusted by teams</span>
+            <span class="badge">Instant transfers</span>
+            <span class="badge">Real-time alerts</span>
+          </div>
+        </div>
+
+        <div class="login-sheet">
+          <div class="login-tabs">
+            <button class="login-tab active" type="button">Sign in</button>
+            <button class="login-tab" type="button">New account</button>
+          </div>
+
+          <div style="margin-top: var(--space-4);">
+            <label class="sm muted" for="phone">Phone number</label>
+            <div class="login-row">
+              <div class="country-pill">NG +234</div>
+              <input id="phone" class="input" inputmode="tel" placeholder="812 745 6579" aria-label="Phone number" value="8127456579" />
+            </div>
+
+            <a class="btn-primary pressable mt4" href="#pin" aria-label="Continue to PIN">
+              Continue
+              <span aria-hidden="true">&gt;</span>
+            </a>
+
+            <div class="secure-row">
+              <div class="secure-icon">LOCK</div>
+              <div class="muted sm">Protected by device PIN and biometrics</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="social-buttons">
+              <a class="btn-ghost pressable" href="#pin" aria-label="Use Face ID">Use Face ID</a>
+              <a class="btn-ghost pressable" href="#login" aria-label="Use email instead">Use email instead</a>
+            </div>
+
+            <div class="row space-between mt4">
+              <a class="link sm" href="#pin">Forgot PIN?</a>
+              <a class="link sm" href="#login">Create account</a>
+            </div>
+            <div class="legal muted tiny">By continuing, you agree to the Terms and Privacy Policy.</div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- PIN -->
+      <section id="pin" class="screen" aria-label="PIN entry">
+        <div class="content" style="padding-top: var(--safe-area-top);">
+          <div class="row space-between" style="padding: 8px 0 2px;">
+            <a class="back pressable" href="#login" aria-label="Back to login">←</a>
+            <div class="muted sm">Secure sign in</div>
+            <div style="width:40px;"></div>
+          </div>
+
+          <div class="center mt4">
+            <div class="xl" style="font-weight: var(--font-semibold);">Enter your PIN</div>
+            <div class="muted sm mt2">Use Face ID or type your 6-digit PIN</div>
+          </div>
+
+          <div class="pin-dots" aria-label="PIN dots" style="padding: var(--space-4) 0;">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+
+          <div class="biometric" style="padding: var(--space-2) 0 var(--space-4);">
+            <div class="faceid pulse" aria-hidden="true">🙂</div>
+            <span class="muted sm">Face ID</span>
+          </div>
+
+          <div class="keypad" aria-label="Numeric keypad (static)">
+            <a class="key pressable" href="#pin" aria-label="Key 1">1</a>
+            <a class="key pressable" href="#pin" aria-label="Key 2">2</a>
+            <a class="key pressable" href="#pin" aria-label="Key 3">3</a>
+            <a class="key pressable" href="#pin" aria-label="Key 4">4</a>
+            <a class="key pressable" href="#pin" aria-label="Key 5">5</a>
+            <a class="key pressable" href="#pin" aria-label="Key 6">6</a>
+            <a class="key pressable" href="#pin" aria-label="Key 7">7</a>
+            <a class="key pressable" href="#pin" aria-label="Key 8">8</a>
+            <a class="key pressable" href="#pin" aria-label="Key 9">9</a>
+            <a class="key pressable" href="#pin" aria-label="Key star">*</a>
+            <a class="key pressable" href="#pin" aria-label="Key 0">0</a>
+            <a class="key pressable" href="#pin" aria-label="Key backspace">⌫</a>
+          </div>
+
+          <div style="padding: var(--space-4) 0 var(--space-6);">
+            <a class="btn-primary pressable" href="#home" aria-label="Sign in">
+              Sign In
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOME -->
+      <section id="home" class="screen" aria-label="Home dashboard">
+        <div class="screen-scroll">
+          <header class="topbar">
+            <div class="row" style="gap:12px; min-width:0;">
+              <div class="avatar" aria-label="User avatar">ES</div>
+              <div style="min-width:0;">
+                <div class="muted sm">Good morning,</div>
+                <div class="lg" style="font-weight: var(--font-semibold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  Enikai Systems
+                </div>
+              </div>
+            </div>
+            <a class="gear pressable" href="#home" aria-label="Settings">⚙️</a>
+          </header>
+
+          <div class="content center" style="padding-top: 6px;">
+            <div class="balance" aria-label="Account balance">EUR 3,924.00</div>
+            <a class="account-pill pressable" href="#home" aria-label="Account selector">
+              Main - EUR <span aria-hidden="true">v</span>
+            </a>
+          </div>
+
+          <div class="mt6">
+            <nav class="quick-actions" aria-label="Quick actions">
+              <a class="qa pressable" href="#home" aria-label="Send">
+                <div class="icon" aria-hidden="true">↗️</div>
+                <div class="label">Send</div>
+              </a>
+              <a class="qa pressable" href="#home" aria-label="Request">
+                <div class="icon" aria-hidden="true">↘️</div>
+                <div class="label">Request</div>
+              </a>
+              <a class="qa pressable" href="#home" aria-label="Add money">
+                <div class="icon" aria-hidden="true">➕</div>
+                <div class="label">Add</div>
+              </a>
+              <a class="qa pressable" href="#home" aria-label="More">
+                <div class="icon" aria-hidden="true">⋯</div>
+                <div class="label">More</div>
+              </a>
+            </nav>
+          </div>
+
+          <div class="section-head">
+            <div class="section-title">Your cards</div>
+            <a class="section-link" href="#cards" aria-label="Manage cards">Manage</a>
+          </div>
+
+          <div class="carousel" aria-label="Card carousel">
+            <div class="vcard standard pressable" role="button" tabindex="0" aria-label="Standard card ending 4242">
+              <div class="vcard-inner">
+                <div class="vcard-top">
+                  <div class="vcard-logo"><span style="font-weight:800;">R</span> Revolut</div>
+                  <div class="chip" aria-hidden="true"></div>
+                </div>
+                <div class="vcard-num">•••• 4242</div>
+                <div class="vcard-bottom">
+                  <div class="vcard-meta">
+                    <div class="vcard-name">ENIKAI SYSTEMS</div>
+                    <div class="vcard-exp">12/27</div>
+                  </div>
+                  <div class="brand" aria-label="Card network">VISA</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vcard premium pressable" role="button" tabindex="0" aria-label="Premium card ending 8888">
+              <div class="vcard-inner">
+                <div class="vcard-top">
+                  <div class="vcard-logo"><span style="font-weight:800;">R</span> Premium</div>
+                  <div class="chip" aria-hidden="true"></div>
+                </div>
+                <div class="vcard-num">•••• 8888</div>
+                <div class="vcard-bottom">
+                  <div class="vcard-meta">
+                    <div class="vcard-name">ENIKAI SYSTEMS</div>
+                    <div class="vcard-exp">06/26</div>
+                  </div>
+                  <div class="brand">MC</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vcard metal pressable" role="button" tabindex="0" aria-label="Metal card ending 1010">
+              <div class="vcard-inner">
+                <div class="vcard-top">
+                  <div class="vcard-logo"><span style="font-weight:800;">R</span> Metal</div>
+                  <div class="chip" aria-hidden="true"></div>
+                </div>
+                <div class="vcard-num">•••• 1010</div>
+                <div class="vcard-bottom">
+                  <div class="vcard-meta">
+                    <div class="vcard-name">ENIKAI SYSTEMS</div>
+                    <div class="vcard-exp">11/28</div>
+                  </div>
+                  <div class="brand">VISA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div class="section-title">Recent transactions</div>
+            <a class="section-link" href="#transactions" aria-label="See all transactions">See all</a>
+          </div>
+
+                    <div class="list" aria-label="Recent transactions list">
+            <a class="item pressable" href="#receipt" aria-label="Transfer from Navro Payments Group LLC">
+              <div class="i-icon" aria-hidden="true">IN</div>
+              <div class="i-mid">
+                <div class="i-title">Navro Payments Group LLC</div>
+                <div class="i-sub">Transfer - Today</div>
+              </div>
+              <div class="amt pos">+3,964.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+
+            <a class="item pressable" href="#transactions" aria-label="Transaction fees">
+              <div class="i-icon" aria-hidden="true">FEE</div>
+              <div class="i-mid">
+                <div class="i-title">Transaction fees</div>
+                <div class="i-sub">Fees - Today</div>
+              </div>
+              <div class="amt">-10.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+
+            <a class="item pressable" href="#transactions" aria-label="ChatGPT subscription">
+              <div class="i-icon" aria-hidden="true">AI</div>
+              <div class="i-mid">
+                <div class="i-title">ChatGPT subscription</div>
+                <div class="i-sub">Subscriptions - Today</div>
+              </div>
+              <div class="amt">-30.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+          </div>
+
+          <div class="content mt4" style="padding-bottom: var(--space-4);">
+            <div class="card pad skeleton" style="height: 84px;" aria-label="Skeleton loading"></div>
+          </div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab active pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      
+      </section>
+
+      <!-- CARDS -->
+      <section id="cards" class="screen" aria-label="Cards">
+        <div class="screen-scroll">
+          <header class="topbar">
+            <div class="page-title">Cards</div>
+            <a class="gear pressable" href="#cards" aria-label="Add new card">+</a>
+          </header>
+
+          <div class="content" style="padding-top: var(--space-2);">
+            <div class="vcard standard" style="width:100%; height:200px;">
+              <div class="vcard-inner">
+                <div class="vcard-top">
+                  <div class="vcard-logo"><span style="font-weight:800;">R</span> Revolut</div>
+                  <div class="chip" aria-hidden="true"></div>
+                </div>
+                <div class="vcard-num">**** **** **** 4242</div>
+                <div class="vcard-bottom">
+                  <div class="vcard-meta">
+                    <div class="vcard-name">ENIKAI SYSTEMS</div>
+                    <div class="vcard-exp">12/27</div>
+                  </div>
+                  <div class="brand" aria-label="Card network">VISA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div class="section-title">Quick controls</div>
+            <a class="section-link" href="#cards" aria-label="Manage cards">Manage</a>
+          </div>
+
+          <div class="action-grid" aria-label="Card actions">
+            <div class="action-tile pressable" role="button" tabindex="0">Freeze</div>
+            <div class="action-tile pressable" role="button" tabindex="0">View PIN</div>
+            <div class="action-tile pressable" role="button" tabindex="0">Limits</div>
+          </div>
+
+          <div class="section-head" style="margin-top: var(--space-6);">
+            <div class="section-title">Card settings</div>
+            <a class="section-link" href="#cards" aria-label="See all settings">See all</a>
+          </div>
+
+          <div class="list" aria-label="Card settings">
+            <a class="item pressable" href="#cards" aria-label="Card details">
+              <div class="i-icon" aria-hidden="true">ID</div>
+              <div class="i-mid">
+                <div class="i-title">Card details</div>
+                <div class="i-sub">PAN, CVV, and expiry</div>
+              </div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+            <a class="item pressable" href="#cards" aria-label="Security">
+              <div class="i-icon" aria-hidden="true">SEC</div>
+              <div class="i-mid">
+                <div class="i-title">Security</div>
+                <div class="i-sub">Magstripe, online, ATM</div>
+              </div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+            <a class="item pressable" href="#cards" aria-label="Subscriptions">
+              <div class="i-icon" aria-hidden="true">SUB</div>
+              <div class="i-mid">
+                <div class="i-title">Subscriptions</div>
+                <div class="i-sub">Manage recurring payments</div>
+              </div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab active pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section id="analytics" class="screen" aria-label="Analytics">
+        <div class="screen-scroll">
+          <header class="topbar">
+            <div class="page-title">Analytics</div>
+            <a class="gear pressable" href="#analytics" aria-label="Insights">i</a>
+          </header>
+
+          <div class="content">
+            <div class="summary" aria-label="Monthly summary">
+              <div class="muted sm">This month spending</div>
+              <div class="big">EUR 1,240.00</div>
+              <div class="delta">Up EUR 120.00 vs last month</div>
+            </div>
+          </div>
+
+          <div class="content">
+            <div class="card pad">
+              <div class="row space-between">
+                <div>
+                  <div class="muted sm">Budget usage</div>
+                  <div class="xl" style="font-weight: var(--font-semibold);">EUR 1,240.00</div>
+                </div>
+                <div class="muted sm">Budget EUR 2,000.00</div>
+              </div>
+              <div class="progress mt4"><span></span></div>
+              <div class="muted sm mt2">62% of monthly budget used</div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div class="section-title">Category breakdown</div>
+            <a class="section-link" href="#analytics" aria-label="Category details">Details</a>
+          </div>
+
+          <div class="content">
+            <div class="card pad">
+              <div class="row space-between" style="margin-bottom: var(--space-3);">
+                <div class="sm">Subscriptions</div>
+                <div class="sm">EUR 420</div>
+              </div>
+              <div class="category-row" style="margin-bottom: var(--space-4);">
+                <div style="width:90px;" class="sm muted">Subscriptions</div>
+                <div class="category-bar"><span style="width:48%;"></span></div>
+                <div class="sm">48%</div>
+              </div>
+              <div class="category-row" style="margin-bottom: var(--space-4);">
+                <div style="width:90px;" class="sm muted">Fees</div>
+                <div class="category-bar"><span style="width:12%;"></span></div>
+                <div class="sm">12%</div>
+              </div>
+              <div class="category-row">
+                <div style="width:90px;" class="sm muted">Transfers</div>
+                <div class="category-bar"><span style="width:40%;"></span></div>
+                <div class="sm">40%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab active pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+      <!-- EXCHANGE -->
+      <section id="exchange" class="screen" aria-label="Exchange">
+        <div class="screen-scroll">
+          <header class="topbar">
+            <div class="page-title">Exchange</div>
+            <a class="gear pressable" href="#exchange" aria-label="Rate alerts">!</a>
+          </header>
+
+          <div class="content">
+            <div class="card pad">
+              <div class="row space-between">
+                <div>
+                  <div class="muted sm">Base currency</div>
+                  <div class="xl" style="font-weight: var(--font-semibold);">EUR</div>
+                </div>
+                <div class="muted sm">Live rates</div>
+              </div>
+              <div class="rate-row">
+                <div>USD</div>
+                <div class="rate">1 EUR = 1.09 USD</div>
+              </div>
+              <div class="rate-row">
+                <div>GBP</div>
+                <div class="rate">1 EUR = 0.85 GBP</div>
+              </div>
+              <div class="rate-row">
+                <div>NGN</div>
+                <div class="rate">1 EUR = 1,120 NGN</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div class="section-title">Quick convert</div>
+            <a class="section-link" href="#exchange" aria-label="View exchange history">History</a>
+          </div>
+
+          <div class="content">
+            <div class="card pad">
+              <label class="sm muted" for="fx-amount">Amount</label>
+              <div class="row" style="gap:10px; margin-top:10px;">
+                <input id="fx-amount" class="input" inputmode="decimal" placeholder="250.00" aria-label="Amount" />
+                <div class="country-pill">EUR</div>
+              </div>
+              <div class="row" style="gap:10px; margin-top:10px;">
+                <input class="input" inputmode="decimal" placeholder="272.50" aria-label="Converted amount" />
+                <div class="country-pill">USD</div>
+              </div>
+              <a class="btn-primary pressable mt4" href="#exchange" aria-label="Convert currency">Convert</a>
+            </div>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab active pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="profile" class="screen" aria-label="Profile">
+        <div class="screen-scroll">
+          <div class="profile-head">
+            <div class="avatar" aria-label="User avatar">ES</div>
+            <div>
+              <div class="lg" style="font-weight: var(--font-semibold);">Enikai Systems</div>
+              <div class="muted sm">Business account</div>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <div class="row space-between">
+              <div>
+                <div class="muted sm">Main balance</div>
+                <div class="xl" style="font-weight: var(--font-semibold);">EUR 3,924.00</div>
+              </div>
+              <div class="muted sm">EUR wallet</div>
+            </div>
+            <div class="divider"></div>
+            <div class="row space-between">
+              <div class="sm">IBAN</div>
+              <div class="sm muted">DE89 3704 0044 0532 0130 00</div>
+            </div>
+          </div>
+
+          <div class="profile-list" aria-label="Profile settings">
+            <a class="profile-item pressable" href="#profile" aria-label="Personal details">
+              <div>Personal details</div>
+              <div class="muted">&gt;</div>
+            </a>
+            <a class="profile-item pressable" href="#profile" aria-label="Security settings">
+              <div>Security</div>
+              <div class="muted">&gt;</div>
+            </a>
+            <a class="profile-item pressable" href="#profile" aria-label="Notifications">
+              <div>Notifications</div>
+              <div class="muted">&gt;</div>
+            </a>
+            <a class="profile-item pressable" href="#profile" aria-label="Help and support">
+              <div>Help and support</div>
+              <div class="muted">&gt;</div>
+            </a>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab active pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+      <!-- RECEIPT -->
+      <section id="receipt" class="screen" aria-label="Transaction receipt">
+        <div class="screen-scroll">
+          <header class="page-head">
+            <a class="back pressable" href="#transactions" aria-label="Back to Transactions">&lt;</a>
+            <div style="font-weight: var(--font-semibold);">Receipt</div>
+            <a class="iconbtn pressable" href="#receipt" aria-label="Share receipt">SH</a>
+          </header>
+
+          <div class="receipt-card" aria-label="Receipt summary">
+            <div class="row space-between">
+              <div>
+                <div class="muted sm">Transfer received</div>
+                <div class="xl" style="font-weight: var(--font-bold);">+3,964.00 EUR</div>
+              </div>
+              <div class="receipt-status">Completed</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="receipt-row">
+              <div class="receipt-label">From</div>
+              <div class="receipt-value">Navro Payments Group LLC</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Account</div>
+              <div class="receipt-value">EUR - Main</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Reference</div>
+              <div class="receipt-value">Invoice 1048</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Date</div>
+              <div class="receipt-value">Today, 09:10</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Transfer type</div>
+              <div class="receipt-value">Business transfer</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Fees</div>
+              <div class="receipt-value">0.00 EUR</div>
+            </div>
+            <div class="receipt-row">
+              <div class="receipt-label">Balance after</div>
+              <div class="receipt-value">3,924.00 EUR</div>
+            </div>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab active pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+      <!-- TRANSACTIONS -->
+      <section id="transactions" class="screen" aria-label="Transactions">
+        <div class="screen-scroll">
+          <header class="page-head">
+            <a class="back pressable" href="#home" aria-label="Back to Home">&lt;</a>
+            <div style="font-weight: var(--font-semibold);">Transactions</div>
+            <div class="filters" aria-label="Search and filter">
+              <a class="iconbtn pressable" href="#transactions" aria-label="Search">S</a>
+              <a class="iconbtn pressable" href="#transactions" aria-label="Filters">F</a>
+            </div>
+          </header>
+
+          <div class="search">
+            <input class="input" placeholder="Search merchant, category" aria-label="Search transactions" />
+          </div>
+
+          <div class="summary" aria-label="Balance summary">
+            <div class="muted sm">Total Balance</div>
+            <div class="big">EUR 3,924.00</div>
+            <div class="delta">Up EUR 120.00 this month</div>
+          </div>
+
+          <div class="group-title">Today</div>
+          <div class="list" aria-label="Today transactions">
+            <a class="item pressable" href="#receipt" aria-label="Transfer from Navro Payments Group LLC">
+              <div class="i-icon" aria-hidden="true">IN</div>
+              <div class="i-mid">
+                <div class="i-title">Navro Payments Group LLC</div>
+                <div class="i-sub">Transfer - 09:10</div>
+              </div>
+              <div class="amt pos">+3,964.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+
+            <a class="item pressable" href="#transactions" aria-label="Transaction fees">
+              <div class="i-icon" aria-hidden="true">FEE</div>
+              <div class="i-mid">
+                <div class="i-title">Transaction fees</div>
+                <div class="i-sub">Fees - 09:12</div>
+              </div>
+              <div class="amt">-10.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+
+            <a class="item pressable" href="#transactions" aria-label="ChatGPT subscription">
+              <div class="i-icon" aria-hidden="true">AI</div>
+              <div class="i-mid">
+                <div class="i-title">ChatGPT subscription</div>
+                <div class="i-sub">Subscriptions - 09:18</div>
+              </div>
+              <div class="amt">-30.00 EUR</div>
+              <div class="chev" aria-hidden="true">&gt;</div>
+            </a>
+          </div>
+
+          <div class="content mt4 pb-nav"></div>
+        </div>
+
+        <footer class="bottom-nav" aria-label="Bottom navigation">
+          <nav class="tabs">
+            <a class="tab active pressable" href="#home" aria-label="Home tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5l9-7 9 7"></path><path d="M5 9.5v9h14v-9"></path></svg></div>
+              <div class="label">Home</div>
+            </a>
+            <a class="tab pressable" href="#cards" aria-label="Cards tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg></div>
+              <div class="label">Cards</div>
+            </a>
+            <a class="tab pressable" href="#analytics" aria-label="Analytics tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19V12"></path></svg></div>
+              <div class="label">Analytics</div>
+            </a>
+            <a class="tab pressable" href="#exchange" aria-label="Exchange tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-3-3"></path><path d="M17 17H7l3 3"></path></svg></div>
+              <div class="label">Exchange</div>
+            </a>
+            <a class="tab pressable" href="#profile" aria-label="Profile tab">
+              <div class="ticon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c2-4 14-4 16 0"></path></svg></div>
+              <div class="label">Profile</div>
+            </a>
+          </nav>
+        </footer>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // ============ APP STATE & UTILITIES ============
+    const AppState = {
+      user: {
+        name: 'Enikai Systems',
+        initials: 'ES',
+        phone: '',
+        pin: ''
+      },
+      ui: {
+        pinAttempts: 0,
+        maxAttempts: 3
+      }
+    };
+
+    // Utility: Navigate to screen
+    function navigateTo(screenId) {
+      window.location.hash = screenId;
+    }
+
+    // Utility: Show/hide element
+    function toggleElement(selector, show) {
+      const el = document.querySelector(selector);
+      if (el) el.style.display = show ? 'block' : 'none';
+    }
+
+    // Utility: Toast notification
+    function showToast(message, type = 'info', duration = 3000) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'error' ? 'rgba(255,59,48,0.9)' : 'rgba(0,208,156,0.9)'};
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        z-index: 9999;
+        animation: slideUp 300ms ease-out;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'slideDown 300ms ease-in forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    function updateActiveTabs(screenId) {
+      const activeScreen = (screenId === 'transactions' || screenId === 'receipt') ? 'home' : screenId;
+      document.querySelectorAll('.tab').forEach((tab) => {
+        const href = tab.getAttribute('href');
+        if (!href) return;
+        const target = href.replace('#', '');
+        tab.classList.toggle('active', target === activeScreen);
+      });
+    }
+
+    // ============ LOGIN HANDLERS ============
+    function initLoginScreen() {
+      const phoneInput = document.getElementById('phone');
+      const continueBtn = document.querySelector('#login .btn-primary');
+
+      if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+          AppState.user.phone = e.target.value;
+          continueBtn.disabled = AppState.user.phone.length < 10;
+        });
+      }
+
+      if (continueBtn) {
+        continueBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (AppState.user.phone.length >= 10) {
+            navigateTo('pin');
+          } else {
+            showToast('Please enter a valid phone number', 'error');
+          }
+        });
+      }
+    }
+
+    // ============ PIN HANDLERS ============
+    function initPinScreen() {
+      let pinEntry = '';
+      const dots = document.querySelectorAll('#pin .dot');
+      const keypadKeys = document.querySelectorAll('#pin .key');
+      const demoSuccessBtn = document.querySelector('#pin .btn-primary');
+      const demoErrorBtn = document.querySelector('#pin .btn-ghost');
+
+      // Update PIN dots display
+      function updateDots() {
+        dots.forEach((dot, i) => {
+          if (i < pinEntry.length) {
+            dot.classList.add('filled');
+          } else {
+            dot.classList.remove('filled');
+          }
+        });
+      }
+
+      // Keypad functionality
+      keypadKeys.forEach((key) => {
+        key.addEventListener('click', (e) => {
+          e.preventDefault();
+          const char = key.textContent.trim();
+
+          if (char === '⌫') {
+            pinEntry = pinEntry.slice(0, -1);
+          } else if (pinEntry.length < 6) {
+            pinEntry += char;
+          }
+
+          updateDots();
+
+          // Auto-validate on 6 digits (PIN 000000 for testing)
+          if (pinEntry.length === 6) {
+            if (pinEntry === '000000') {
+              setTimeout(() => navigateTo('home'), 300);
+            } else {
+              AppState.ui.pinAttempts++;
+              shakeKeypad();
+              showToast('Incorrect PIN. Please try again.', 'error');
+              pinEntry = '';
+              updateDots();
+            }
+          }
+        });
+      });
+
+      if (demoSuccessBtn) {
+        demoSuccessBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigateTo('home');
+        });
+      }
+
+      if (demoErrorBtn) {
+        demoErrorBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          shakeKeypad();
+          showToast('Incorrect PIN attempt', 'error');
+          pinEntry = '';
+          updateDots();
+        });
+      }
+
+      function shakeKeypad() {
+        const keypad = document.querySelector('#pin .keypad');
+        if (keypad) {
+          keypad.classList.remove('shake');
+          // Force reflow to restart animation
+          void keypad.offsetWidth;
+          keypad.classList.add('shake');
+          keypad.addEventListener('animationend', () => {
+            keypad.classList.remove('shake');
+          }, { once: true });
+        }
+      }
+    }
+
+    // ============ HOME SCREEN HANDLERS ============
+    function initHomeScreen() {
+      // Quick actions
+      document.querySelectorAll('#home .qa').forEach((qa) => {
+        qa.addEventListener('click', (e) => {
+          e.preventDefault();
+          const action = qa.querySelector('.label')?.textContent || 'Action';
+          showToast(`${action} feature coming soon`, 'info');
+        });
+      });
+
+      // Cards carousel with swipe support
+      const carousel = document.querySelector('#home .carousel');
+      if (carousel) {
+        let startX = 0;
+        carousel.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+        });
+
+        carousel.addEventListener('touchend', (e) => {
+          const endX = e.changedTouches[0].clientX;
+          const diff = startX - endX;
+          if (Math.abs(diff) > 50) {
+            carousel.scrollBy({
+              left: diff > 0 ? 150 : -150,
+              behavior: 'smooth'
+            });
+          }
+        });
+      }
+
+      // Settings button
+      const settingsBtn = document.querySelector('#home .gear');
+      if (settingsBtn) {
+        settingsBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          showToast('Settings coming soon', 'info');
+        });
+      }
+
+      // Account selector
+      const accountPill = document.querySelector('#home .account-pill');
+      if (accountPill) {
+        accountPill.addEventListener('click', (e) => {
+          e.preventDefault();
+          showToast('Multi-currency support coming soon', 'info');
+        });
+      }
+    }
+
+    // ============ TRANSACTION HANDLERS ============
+    function initTransactionsScreen() {
+      const searchInput = document.querySelector('#transactions .input');
+      const filterBtn = document.querySelector('#transactions .filters a:last-child');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          const items = document.querySelectorAll('#transactions .item');
+
+          items.forEach((item) => {
+            const title = item.querySelector('.i-title')?.textContent.toLowerCase();
+            const visible = title?.includes(query) ?? true;
+            item.style.display = visible ? 'flex' : 'none';
+          });
+
+          if (query && !Array.from(items).some(item => item.style.display !== 'none')) {
+            showToast('No transactions found', 'info');
+          }
+        });
+      }
+
+      if (filterBtn) {
+        filterBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          showToast('Filter options coming soon', 'info');
+        });
+      }
+    }
+
+    // ============ GLOBAL HANDLERS ============
+    function initGlobalHandlers() {
+      // Ripple effect on pressable elements
+      document.querySelectorAll('.pressable').forEach((el) => {
+        el.addEventListener('click', function (e) {
+          // Ripple already handled by CSS :active
+        });
+      });
+
+      // Navigation handling
+      document.addEventListener('hashchange', () => {
+        const currentScreen = window.location.hash.slice(1) || 'login';
+        updateActiveTabs(currentScreen);
+        
+        if (currentScreen === 'pin') {
+          initPinScreen();
+        } else if (currentScreen === 'home') {
+          initHomeScreen();
+        } else if (currentScreen === 'transactions') {
+          initTransactionsScreen();
+        }
+      });
+
+      // Bottom nav active state
+      document.querySelectorAll('.tab').forEach((tab) => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          const href = tab.getAttribute('href');
+          if (href) navigateTo(href.slice(1));
+        });
+      });
+    }
+
+    // ============ INIT ============
+    document.addEventListener('DOMContentLoaded', () => {
+      initLoginScreen();
+      initGlobalHandlers();
+      updateActiveTabs(window.location.hash.slice(1) || 'login');
+      
+      // Smooth scroll behavior
+      document.documentElement.style.scrollBehavior = 'smooth';
+
+      console.log('✓ Revolut Banking App Initialized');
+    });
+
+    // Add toast animations and button states
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideUp {
+        from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+      }
+      @keyframes slideDown {
+        from { transform: translateX(-50%) translateY(0); opacity: 1; }
+        to { transform: translateX(-50%) translateY(20px); opacity: 0; }
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
